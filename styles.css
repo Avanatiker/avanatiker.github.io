@@ -23,7 +23,7 @@ a {
 }
 
 #pi-text {
-    font-size: 30vmin;
+    font-size: 20vmin;
 }
 
 #pi-hint {
@@ -35,7 +35,7 @@ a {
 #pi-digits-count {
     display: block;
     position: fixed;
-    font-size: 5vmin;
+    font-size: 3vmin;
     top: 0;
     right: 0;
     margin: 2vmin;
