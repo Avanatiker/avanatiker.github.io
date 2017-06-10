@@ -1,6 +1,6 @@
 /*jshint browser: true, devel: true*/
 (function () {
-    var pi, loadingEl, piTextEl, piEntryEl, piDigitsCountEl, piHintEl, entered = "", keys, hintShown = false;
+    var pi, loadingEl, piTextEl, piEntryEl, piDigitsCountEl, piHintEl, entered = "", keys, hintShown = false, sepp = 0;
 
     keys = {
         48: 0,
@@ -49,7 +49,7 @@
 
         piHintEl.addEventListener("click", toggleHint);
 
-        console.log("Loading pi from file \"./pi.txt\" - Go ahead and study it if you wish. Thanks to http://www.geom.uiuc.edu/~huberty/math5337/groupe/digits.html for 100,000 digits of PI!");
+        console.log("Getting Pi as variable from https://raw.githubusercontent.com/coreos/gzran/master/testdata/pi.txt");
         pi = getPI();
         console.log("Pi finished loading.");
         loadingEl.style.display = "none";
@@ -57,27 +57,32 @@
 
         window.addEventListener("keydown", function (e) {
             var keyCode = e.which || e.keyCode;
-            if (keyCode === 8 && entered.length > 0) {
-                entered = entered.substring(0, entered.length - 1);
+            if (keyCode === 8 && (entered.length - sepp) > 0) {
+                entered = entered.substring(0, (entered.length - sepp) - 1);
                 e.preventDefault();
                 hideHint();
             } else if (keyCode === 32) {
                 toggleHint();
             } else if (keys[keyCode] !== undefined) {
-                if (pi.charAt(entered.length) === keys[keyCode].toString()) {
-                    entered = entered + "" + keys[keyCode].toString();
+                if (pi.charAt(entered.length - sepp) === keys[keyCode].toString()) {
+                    if (entered.length % 5 === 2) {
+                        entered = entered + " " + keys[keyCode].toString();
+                        sepp += 1;
+                    } else {
+                        entered = entered + "" + keys[keyCode].toString();
+                    }
                     hideHint();
                 } else {
-                    piHintEl.innerText = pi.charAt(entered.length);
+                    piHintEl.innerText = pi.charAt(entered.length - sepp);
                     piHintEl.style.backgroundColor = "transparent";
                 }
             }
             piEntryEl.innerText = entered;
-            piDigitsCountEl.innerText = "" + entered.length;
+            piDigitsCountEl.innerText = "" + (entered.length - sepp);
         });
 
         setInterval(function () {
-            document.body.scrollLeft += 10;
+            window.scrollTo(0,document.body.scrollHeight);
         }, 1);
     }
 
@@ -96,7 +101,7 @@
     }
 
     function showHint () {
-        piHintEl.innerText = pi.charAt(entered.length);
+        piHintEl.innerText = pi.charAt(entered.length - sepp);
         piHintEl.style.backgroundColor = "transparent";
         hintShown = true;
     }
